@@ -9,6 +9,7 @@ import UIKit
 import TinyConstraints
 import FirebaseAuth
 import FBSDKLoginKit
+import GoogleSignIn
 
 class LoginViewController: UIViewController {
     private lazy var scrollView: UIScrollView = Self.makeScrollView()
@@ -18,11 +19,19 @@ class LoginViewController: UIViewController {
     private lazy var passwordField: UITextField = Self.makePasswordField()
     private lazy var loginButton: UIButton = Self.makeLoginButton()
     private lazy var fBLoginButton: FBLoginButton = Self.makeFBLoginButton()
+    private lazy var googleSignIn: GIDSignInButton = Self.makeGoogleSignIn()
+    private var loginObserver: NSObjectProtocol?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Login"
         self.view.backgroundColor = .white
+
+        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            self.navigationController?.dismiss(animated: true)
+        }
+        GIDSignIn.sharedInstance()?.uiDelegate = self
 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Register",
@@ -43,7 +52,8 @@ class LoginViewController: UIViewController {
         self.scrollViewContainer.addArrangedSubview(self.emailField)
         self.scrollViewContainer.addArrangedSubview(self.passwordField)
         self.scrollViewContainer.addArrangedSubview(self.loginButton)
-        self.scrollViewContainer.addArrangedSubview(fBLoginButton)
+        self.scrollViewContainer.addArrangedSubview(self.fBLoginButton)
+        self.scrollViewContainer.addArrangedSubview(self.googleSignIn)
 
         self.loginButton.addTarget(self,
                                    action: #selector(self.loginButtonTapped),
@@ -54,10 +64,21 @@ class LoginViewController: UIViewController {
         self.fBLoginButton.delegate = self
 
     }
+
+    deinit {
+        if let observer = loginObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
 }
 
 // MARK: - Factory
 extension LoginViewController {
+    private static func makeGoogleSignIn() -> GIDSignInButton {
+        let button = GIDSignInButton()
+        return button
+    }
+
     private static func makeFBLoginButton() -> FBLoginButton {
         let loginButton = FBLoginButton()
         loginButton.permissions = ["public_profile", "email"]
@@ -241,4 +262,8 @@ extension LoginViewController: LoginButtonDelegate {
             self.navigationController?.dismiss(animated: true)
         }
     }
+}
+
+extension LoginViewController: GIDSignInUIDelegate {
+    
 }
