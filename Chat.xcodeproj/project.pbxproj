@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A26B61C7289160850055C19D /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26B61C6289160850055C19D /* DatabaseManager.swift */; };
+		A26B61C92891787A0055C19D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A26B61C82891787A0055C19D /* GoogleService-Info.plist */; };
 		A2D0BF702890333400A94F6C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D0BF6F2890333400A94F6C /* AppDelegate.swift */; };
 		A2D0BF722890333400A94F6C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D0BF712890333400A94F6C /* SceneDelegate.swift */; };
 		A2D0BF742890333400A94F6C /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2D0BF732890333400A94F6C /* ConversationsViewController.swift */; };
@@ -24,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A26B61C6289160850055C19D /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		A26B61C82891787A0055C19D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A2D0BF6C2890333400A94F6C /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2D0BF6F2890333400A94F6C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A2D0BF712890333400A94F6C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +64,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A26B61C5289160730055C19D /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				A26B61C6289160850055C19D /* DatabaseManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		A2D0BF632890333400A94F6C = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +92,8 @@
 		A2D0BF6E2890333400A94F6C /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				A26B61C82891787A0055C19D /* GoogleService-Info.plist */,
+				A26B61C5289160730055C19D /* Managers */,
 				A2D0BF87289035A500A94F6C /* Resources */,
 				A2D0BF862890359E00A94F6C /* ViewModels */,
 				A2D0BF852890359200A94F6C /* Controllers */,
@@ -222,6 +236,7 @@
 				A2D0BF7C2890333900A94F6C /* LaunchScreen.storyboard in Resources */,
 				A2D0BF792890333900A94F6C /* Assets.xcassets in Resources */,
 				A2D0BF772890333400A94F6C /* Main.storyboard in Resources */,
+				A26B61C92891787A0055C19D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2D0BF8A289036CD00A94F6C /* LoginViewController.swift in Sources */,
+				A26B61C7289160850055C19D /* DatabaseManager.swift in Sources */,
 				A2D0BF8C289036DF00A94F6C /* RegisterViewController.swift in Sources */,
 				A2D0BF922890375C00A94F6C /* NewConversationViewController.swift in Sources */,
 				A2D0BF742890333400A94F6C /* ConversationsViewController.swift in Sources */,
@@ -413,6 +429,8 @@
 				DEVELOPMENT_TEAM = FKJRTB74YX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Chat/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to Camera";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow access to Photo Library";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -443,6 +461,8 @@
 				DEVELOPMENT_TEAM = FKJRTB74YX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Chat/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to Camera";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow access to Photo Library";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
