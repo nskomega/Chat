@@ -12,8 +12,15 @@ pod 'R.swift'
 pod 'Firebase/Core'
 pod 'Firebase/Auth'
 pod 'Firebase/Database'
+pod 'Firebase/Storage'
 # Facebook login
 pod 'FBSDKLoginKit'
 # GoogleSignIn
 pod 'GoogleSignIn', '< 5.0.0'
+
+pod 'MessageKit'
+pod 'JGProgressHUD'
+pod 'RealmSwift'
+pod 'SDWebImage'
+
 end

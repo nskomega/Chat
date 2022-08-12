@@ -10,6 +10,7 @@ import TinyConstraints
 import FirebaseAuth
 import FBSDKLoginKit
 import GoogleSignIn
+import JGProgressHUD
 
 class LoginViewController: UIViewController {
     private lazy var scrollView: UIScrollView = Self.makeScrollView()
@@ -21,6 +22,7 @@ class LoginViewController: UIViewController {
     private lazy var fBLoginButton: FBLoginButton = Self.makeFBLoginButton()
     private lazy var googleSignIn: GIDSignInButton = Self.makeGoogleSignIn()
     private var loginObserver: NSObjectProtocol?
+    private let spinner = JGProgressHUD(style: .dark)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -168,8 +170,13 @@ extension LoginViewController {
             alertUserLoginError()
             return
         }
+        self.spinner.show(in: view)
+
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.spinner.dismiss(animated: true)
+            }
             guard let result = authResult, error == nil else {
                 print("Failed to log in user with email: \(email)")
                 return
@@ -214,37 +221,62 @@ extension LoginViewController: LoginButtonDelegate {
         }
         let facebookRequest = FBSDKLoginKit.GraphRequest(
             graphPath: "me",
-            parameters: ["fields": "email, name"],
+            parameters: ["fields": "email, first_name, last_name, picture.type(large)"],
             tokenString: token,
             version: nil,
             httpMethod: .get
         )
         facebookRequest.start { _, result, error in
             guard let result = result as? [String: Any],
-                    error == nil else {
+                  error == nil else {
                 print(">>>> Failed to make facebok graph request")
                 return
             }
             print(">>>>\(result)")
-            guard let userName = result["name"] as? String,
-                  let email = result["email"] as? String else {
+
+            guard let firstName = result["first_name"] as? String,
+                  let lastName = result["last_name"] as? String,
+                  let email = result["email"] as? String,
+                  let picture = result["picture"] as? [String: Any],
+                  let data = picture["data"] as? [String: Any],
+                  let pictureUrl = data["url"] as? String
+            else {
                 print(">>>> Failed to get email and name from fb request")
                 return
             }
-            let nameComponents = userName.components(separatedBy: " ")
-            guard nameComponents.count == 2 else {
-                return
-            }
-            let firstName = nameComponents[0]
-            let lastName = nameComponents[1]
 
             DatabaseManager.shared.userExists(with: email) { exists in
                 if !exists {
-                    DatabaseManager.shared.insertUser(with: CurrentUser(
+                    let user = CurrentUser(
                         firstName: firstName,
                         lastName: lastName,
                         emailAdress: email)
-                    )
+                    DatabaseManager.shared.insertUser(with: user, completion: { success in
+                        if success {
+                            // upload image
+                            guard let url = URL(string: pictureUrl) else {
+                                return
+                            }
+                            URLSession.shared.dataTask(with: url, completionHandler: { data, _,_ in
+                                guard let data = data else {
+                                    print("Failed to get data from facebook")
+                                    return
+                                }
+                                print("Got data from FB, uploading...")
+                                let fileName = user.profilePictureFileName
+                                StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: {
+                                    results in
+                                    switch results {
+                                    case .success(let downloadUrl):
+                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                        print(downloadUrl)
+                                    case .failure(let error):
+                                        print("Storage manager error: \(error)")
+                                    }
+                                })
+                            }).resume()
+                        }
+                    })
                 }
             }
         }

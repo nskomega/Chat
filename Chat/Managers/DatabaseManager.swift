@@ -30,18 +30,18 @@ extension DatabaseManager {
     }
 
     /// Insert new User to database
-    public func insertUser(with user: CurrentUser) {
+    public func insertUser(with user: CurrentUser, completion: @escaping (Bool) -> Void) {
         self.database.child(user.safeEmail).setValue([
             "fist_name": user.firstName,
             "last_name": user.lastName
-        ]) {
-            (error:Error?, ref:DatabaseReference) in
-            if let error = error {
-                print(">>>>Data could not be saved: \(error).")
-            } else {
-                print("Data saved successfully!")
+        ], withCompletionBlock: { error, _ in
+            guard error == nil else {
+                print("Failde to write to databese")
+                completion(false)
+                return
             }
-        }
+            completion(true)
+        })
     }
 }
 
@@ -54,5 +54,9 @@ struct CurrentUser {
         var safeEmail = emailAdress.replacingOccurrences(of: ".", with: "-")
         safeEmail = safeEmail.replacingOccurrences(of: "@", with: "-")
         return safeEmail
+    }
+
+    var profilePictureFileName: String {
+        return "\(safeEmail)_profile_picture.png"
     }
 }

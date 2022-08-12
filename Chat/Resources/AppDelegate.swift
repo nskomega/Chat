@@ -75,10 +75,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         }
         DatabaseManager.shared.userExists(with: email) { exist in
             if !exist {
-                DatabaseManager.shared.insertUser(with: CurrentUser(
+                let currentUser = CurrentUser(
                     firstName: firstName,
                     lastName: lastName,
-                    emailAdress: email))
+                    emailAdress: email)
+                DatabaseManager.shared.insertUser(with: currentUser, completion: { success in
+                    if success {
+                        //upload image
+                        if user.profile.hasImage {
+                            guard let url = user.profile.imageURL(withDimension: 200) else {
+                                return
+                            }
+                            URLSession.shared.dataTask(with: url, completionHandler: { data, _, _ in
+                                guard let data = data else {
+                                    return
+                                }
+
+                                let fileName = currentUser.profilePictureFileName
+                                StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: {
+                                    results in
+                                    switch results {
+                                    case .success(let downloadUrl):
+                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                        print(downloadUrl)
+                                    case .failure(let error):
+                                        print("Storage manager error: \(error)")
+                                    }
+                                })
+                            }).resume()
+
+                        }
+
+                    }
+                })
             }
         }
 

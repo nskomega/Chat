@@ -8,6 +8,7 @@
 import UIKit
 import TinyConstraints
 import FirebaseAuth
+import JGProgressHUD
 
 class RegisterViewController: UIViewController {
     private lazy var scrollView: UIScrollView = Self.makeScrollView()
@@ -18,6 +19,7 @@ class RegisterViewController: UIViewController {
     private lazy var lastNameField: UITextField = Self.makeLastNameField()
     private lazy var passwordField: UITextField = Self.makePasswordField()
     private lazy var registerButton: UIButton = Self.makeRegisterButton()
+    private let spinner = JGProgressHUD(style: .dark)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -173,18 +175,41 @@ extension RegisterViewController {
                 self.alertUserLoginError(message: "Looks like a user account for that email address alredy exists.")
                 return
             }
+            self.spinner.show(in: self.view)
 
             Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResults, error in
                 guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.spinner.dismiss(animated: true)
+                }
                 guard authResults != nil, error == nil else {
                     print("error creating User")
                     return
                 }
-                DatabaseManager.shared.insertUser(with: CurrentUser(
+                let user = CurrentUser(
                     firstName: firstName,
                     lastName: lastName,
                     emailAdress: email
-                ))
+                )
+                DatabaseManager.shared.insertUser(with: user, completion: { success in
+                    if success {
+                        //upload image
+                        guard let image = self.imageView.image, let data = image.pngData() else {
+                            return
+                        }
+                        let fileName = user.profilePictureFileName
+                        StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: {
+                            results in
+                            switch results {
+                            case .success(let downloadUrl):
+                                UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                print(downloadUrl)
+                            case .failure(let error):
+                                print("Storage manager error: \(error)")
+                            }
+                        })
+                    }
+                })
                 self.navigationController?.dismiss(animated: true, completion: nil)
             }
         }
