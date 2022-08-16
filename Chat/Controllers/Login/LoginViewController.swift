@@ -178,14 +178,14 @@ extension LoginViewController {
                 self.spinner.dismiss(animated: true)
             }
             guard let result = authResult, error == nil else {
-                print("Failed to log in user with email: \(email)")
+                print(">>>> Failed to log in user with email: \(email)")
                 return
             }
             let user = result.user
 
             UserDefaults.standard.set(email, forKey: "email")
 
-            print("Logged in User: \(user)")
+            print(">>>> Logged in User: \(user)")
             self.navigationController?.dismiss(animated: true, completion: nil)
         }
     }
@@ -219,7 +219,7 @@ extension LoginViewController: LoginButtonDelegate {
 
     func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
         guard let token = result?.token?.tokenString else {
-            print("User failed to log in with facebook")
+            print(">>>> User failed to log in with facebook")
             return
         }
         let facebookRequest = FBSDKLoginKit.GraphRequest(
@@ -263,19 +263,19 @@ extension LoginViewController: LoginButtonDelegate {
                             }
                             URLSession.shared.dataTask(with: url, completionHandler: { data, _,_ in
                                 guard let data = data else {
-                                    print("Failed to get data from facebook")
+                                    print(">>>>Failed to get data from facebook")
                                     return
                                 }
-                                print("Got data from FB, uploading...")
+                                print(">>>> Got data from FB, uploading...")
                                 let fileName = user.profilePictureFileName
                                 StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: {
                                     results in
                                     switch results {
                                     case .success(let downloadUrl):
                                         UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
-                                        print(downloadUrl)
+                                        print(">>>> ", downloadUrl)
                                     case .failure(let error):
-                                        print("Storage manager error: \(error)")
+                                        print(">>>> Storage manager error: \(error)")
                                     }
                                 })
                             }).resume()

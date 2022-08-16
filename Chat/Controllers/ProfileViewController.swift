@@ -30,7 +30,7 @@ class ProfileViewController: UIViewController {
         let safeEmail = DatabaseManager.safeEmail(emailAdress: email as! String)
         let fileName = safeEmail + "_profile_picture.png"
         let path = "images/" + fileName
-        print("PATH: \(path)")
+        print(">>>> PATH: \(path)")
         let headerView = UIView(frame: CGRect(x: 0,
                                               y: 0,
                                               width: self.view.width,
@@ -53,7 +53,7 @@ class ProfileViewController: UIViewController {
                 print(">>>> URL: ", url)
                 self?.donwloadImage(imageView: imageView, url: url)
             case .failure(let error):
-                print(">>>>Failed to get download url: \(error)")
+                print(">>>> Failed to get download url: \(error)")
             }
         })
         return headerView
@@ -110,7 +110,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
                     nav.modalPresentationStyle = .fullScreen
                     self.present(nav, animated: true)
                 } catch {
-                    print("Failed to logout")
+                    print(">>>> Failed to logout")
                 }
             }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

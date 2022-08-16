@@ -183,7 +183,7 @@ extension RegisterViewController {
                     self.spinner.dismiss(animated: true)
                 }
                 guard authResults != nil, error == nil else {
-                    print("error creating User")
+                    print(">>>> error creating User")
                     return
                 }
                 let user = CurrentUser(
@@ -203,9 +203,9 @@ extension RegisterViewController {
                             switch results {
                             case .success(let downloadUrl):
                                 UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
-                                print(downloadUrl)
+                                print(">>>> ", downloadUrl)
                             case .failure(let error):
-                                print("Storage manager error: \(error)")
+                                print(">>>> Storage manager error: \(error)")
                             }
                         })
                     }
@@ -288,7 +288,7 @@ extension RegisterViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
-        print(info)
+        print(">>>> ", info)
         guard let selectedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
         self.imageView.image = selectedImage
     }

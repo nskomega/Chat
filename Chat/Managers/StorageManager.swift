@@ -21,7 +21,7 @@ final class StorageManager {
                                      completion: @escaping UploadPictureCompletion) {
         self.storage.child("images/\(fileName)").putData(data, metadata: nil) { metadata, error in
             guard error == nil else {
-                print("Failed to upload data to firebase for picture")
+                print(">>>> Failed to upload data to firebase for picture")
                 completion(.failure(StorageErrors.failedToUpload))
                 return
             }
@@ -32,7 +32,7 @@ final class StorageManager {
                     return
                 }
                 let urlString = url.absoluteString
-                print("Download url returned: \(urlString)")
+                print(">>>> Download url returned: \(urlString)")
                 completion(.success(urlString))
             }
         }

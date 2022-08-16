@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         guard error == nil else {
             if let error = error {
-                print("Failde to sign in with Google: \(error)")
+                print(">>>> Failde to sign in with Google: \(error)")
             }
             return
         }
@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         guard let email = user.profile.email,
               let firstName = user.profile.givenName,
               let lastName = user.profile.familyName else {
-            print("Did sign in with Google: \(user)")
+            print(">>>> Did sign in with Google: \(user)")
             return
         }
 
@@ -100,9 +100,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                                     switch results {
                                     case .success(let downloadUrl):
                                         UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
-                                        print(downloadUrl)
+                                        print(">>>> ", downloadUrl)
                                     case .failure(let error):
-                                        print("Storage manager error: \(error)")
+                                        print(">>>> Storage manager error: \(error)")
                                     }
                                 })
                             }).resume()
@@ -115,7 +115,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         }
 
         guard let authentication = user.authentication else {
-            print("Missing auth object off of google user \(user)")
+            print(">>>> Missing auth object off of google user \(user)")
             return
         }
         let credential = GoogleAuthProvider.credential(
@@ -123,15 +123,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             accessToken: authentication.accessToken)
         Auth.auth().signIn(with: credential) { authResult, error in
             guard authResult != nil, error == nil else {
-                print("Failed to log in with google credential")
+                print(">>>> Failed to log in with google credential")
                 return
             }
-            print(">>>Successfully signed in with Google<<<<")
+            print(">>>> Successfully signed in with Google<<<<")
             NotificationCenter.default.post(name: .didLogInNotification, object: nil)
         }
     }
 
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
-        print("Google user was disconnected")
+        print(">>>> Google user was disconnected")
     }
 }

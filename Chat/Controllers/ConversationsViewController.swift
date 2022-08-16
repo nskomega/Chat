@@ -10,10 +10,25 @@ import FirebaseAuth
 import JGProgressHUD
 import TinyConstraints
 
+struct Conversation {
+    let id: String
+    let name: String
+    let otherUserEmail: String
+    let latestMessage: LatestMessage
+}
+
+struct LatestMessage {
+    let date: String
+    let message: String
+    let isRead: Bool
+}
+
 class ConversationsViewController: UIViewController {
     private lazy var tableView: UITableView = Self.makeTableView()
     private lazy var mainLabel: UILabel = Self.makeMainLabel()
     private let spinner = JGProgressHUD(style: .dark)
+
+    private var conversations = [Conversation]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +50,7 @@ class ConversationsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.validateAuth()
+        self.startListeningForConversations()
     }
 
 }
@@ -52,27 +68,60 @@ extension ConversationsViewController {
     private func fetchConversations() {
         self.tableView.isHidden = false
     }
+
+    private func startListeningForConversations() {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
+            return
+        }
+        print(">>>> Starting conversation Fetch...")
+        let safeEmail = DatabaseManager.safeEmail(emailAdress: email)
+        DatabaseManager.shared.getAllConversations(for: safeEmail) { [weak self] result in
+            switch result {
+            case .success(let conversations):
+                print(">>>> Successuly got conversation models")
+                guard !conversations.isEmpty else {
+                    print(">>>> Conversations isEmpty")
+                    return
+                }
+                self?.conversations = conversations
+                print(">>>> Conversations: \(conversations)")
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(">>>> Failed to get conversations: \(error)")
+            }
+        }
+    }
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
 extension ConversationsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        print(">>>> ", self.conversations.count)
+        return self.conversations.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "Hello world!"
-        cell.accessoryType = .disclosureIndicator
+        let model = conversations[indexPath.row]
+        print(">>>> ", model)
+        let cell = tableView.dequeueReusableCell(withIdentifier: ConversationTableViewCell.identifier, for: indexPath) as! ConversationTableViewCell
+        cell.configure(with: model)
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let vc = ChatViewController(with: "String")
-        vc.title = "Mikhail Danilov"
+        let model = conversations[indexPath.row]
+        print(">>>> ", model)
+        let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
+        vc.title = model.name
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
     }
 }
 
@@ -81,8 +130,8 @@ extension ConversationsViewController {
     private static func makeTableView() -> UITableView {
         let table = UITableView()
         table.isHidden = true
-        table.register(UITableViewCell.self,
-                       forCellReuseIdentifier: "cell")
+        table.register(ConversationTableViewCell.self,
+                       forCellReuseIdentifier: ConversationTableViewCell.identifier)
         return table
     }
 
@@ -103,7 +152,7 @@ extension ConversationsViewController {
     private func didTapComposeButton() {
         let vc = NewConversationViewController()
         vc.completion = { [weak self] result in
-            print("\(result)")
+            print(">>>> \(result)")
             self?.createNewConversation(result: result)
         }
         let navVC = UINavigationController(rootViewController: vc)
@@ -116,7 +165,7 @@ extension ConversationsViewController {
         else {
             return
         }
-        let vc = ChatViewController(with: email)
+        let vc = ChatViewController(with: email, id: nil)
         vc.isNewConversation = true
         vc.title = name
         vc.navigationItem.largeTitleDisplayMode = .never
