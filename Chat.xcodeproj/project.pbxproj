@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A26B61C7289160850055C19D /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26B61C6289160850055C19D /* DatabaseManager.swift */; };
 		A26B61C92891787A0055C19D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A26B61C82891787A0055C19D /* GoogleService-Info.plist */; };
+		A2833E0628A7236100A978F1 /* Extension+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2833E0528A7236100A978F1 /* Extension+UIView.swift */; };
 		A2B4392528A135E2003539DC /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2B4392428A135E2003539DC /* StorageManager.swift */; };
 		A2C2D4552894D42D000157AE /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C2D4542894D42D000157AE /* Extension.swift */; };
 		A2C2D4572894DBF6000157AE /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C2D4562894DBF6000157AE /* ChatViewController.swift */; };
@@ -31,6 +32,7 @@
 /* Begin PBXFileReference section */
 		A26B61C6289160850055C19D /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		A26B61C82891787A0055C19D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A2833E0528A7236100A978F1 /* Extension+UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UIView.swift"; sourceTree = "<group>"; };
 		A2B4392428A135E2003539DC /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		A2C2D4542894D42D000157AE /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		A2C2D4562894DBF6000157AE /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			children = (
 				A2D0BF6F2890333400A94F6C /* AppDelegate.swift */,
 				A2D0BF712890333400A94F6C /* SceneDelegate.swift */,
+				A2833E0528A7236100A978F1 /* Extension+UIView.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 			files = (
 				A2D0BF8A289036CD00A94F6C /* LoginViewController.swift in Sources */,
 				A26B61C7289160850055C19D /* DatabaseManager.swift in Sources */,
+				A2833E0628A7236100A978F1 /* Extension+UIView.swift in Sources */,
 				A2D0BF8C289036DF00A94F6C /* RegisterViewController.swift in Sources */,
 				A2B4392528A135E2003539DC /* StorageManager.swift in Sources */,
 				A2C2D4552894D42D000157AE /* Extension.swift in Sources */,

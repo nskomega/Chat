@@ -73,6 +73,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             print("Did sign in with Google: \(user)")
             return
         }
+
+        UserDefaults.standard.set(email, forKey: "email")
+
         DatabaseManager.shared.userExists(with: email) { exist in
             if !exist {
                 let currentUser = CurrentUser(
